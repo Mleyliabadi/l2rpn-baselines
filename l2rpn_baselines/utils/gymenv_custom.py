@@ -13,6 +13,7 @@ import numpy as np
 from grid2op.Observation import BaseObservation
 from grid2op.Action import BaseAction
 from grid2op.gym_compat import GymEnv
+from grid2op.gym_compat.utils import GYM_VERSION
 
 
 class GymEnvWithHeuristics(GymEnv):
@@ -261,13 +262,17 @@ class GymEnvWithHeuristics(GymEnv):
         gym_obs:
             The first open ai gym observation received by the agent
         """
-        if hasattr(type(self), "_gymnasium") and type(self)._gymnasium:
+        is_gymnasium = hasattr(type(self), "_gymnasium") and type(self)._gymnasium
+        if is_gymnasium:
             return_info = True
             
         done = True
         info = {}  # no extra information provided !
         while done:
-            super()._aux_reset(seed, return_info, options)  # reset the scenario
+            if is_gymnasium or str(GYM_VERSION) >= "0.26.0":
+                super().reset(seed=seed, options=options) # reset the scenario
+            else:
+                super()._aux_reset(seed, return_info, options)  # reset the scenario
             g2op_obs = self.init_env.get_obs()  # retrieve the observation
             reward = self.init_env.reward_range[0]  # the reward at first step is always minimal
             
