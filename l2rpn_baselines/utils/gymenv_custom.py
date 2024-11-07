@@ -65,6 +65,7 @@ class GymEnvWithHeuristics(GymEnv):
             raise RuntimeError("Wrong argument for the reward_cumul parameters. "
                                f"You provided \"{self._reward_cumul}\" (possible "
                                f"values are {type(self).POSSIBLE_REWARD_CUMUL}).")
+        self.min_gym_version = version.parse("0.26.0")
             
     @abstractmethod
     def heuristic_actions(self,
@@ -271,7 +272,7 @@ class GymEnvWithHeuristics(GymEnv):
         done = True
         info = {}  # no extra information provided !
         while done:
-            if is_gymnasium or GYM_VERSION >= version.parse("0.26.0"):
+            if is_gymnasium or GYM_VERSION >= self.min_gym_version:
                 super().reset(seed=seed, options=options) # reset the scenario
             else:
                 super()._aux_reset(seed, return_info, options)  # reset the scenario
