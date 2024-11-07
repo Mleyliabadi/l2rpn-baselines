@@ -15,6 +15,8 @@ from grid2op.Action import BaseAction
 from grid2op.gym_compat import GymEnv
 from grid2op.gym_compat.utils import GYM_VERSION
 
+from packaging import version
+
 
 class GymEnvWithHeuristics(GymEnv):
     """This abstract class is used to perform some actions, independantly of a RL
@@ -269,7 +271,7 @@ class GymEnvWithHeuristics(GymEnv):
         done = True
         info = {}  # no extra information provided !
         while done:
-            if is_gymnasium or str(GYM_VERSION) >= "0.26.0":
+            if is_gymnasium or GYM_VERSION >= version.parse("0.26.0"):
                 super().reset(seed=seed, options=options) # reset the scenario
             else:
                 super()._aux_reset(seed, return_info, options)  # reset the scenario
