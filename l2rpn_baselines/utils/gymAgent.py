@@ -103,7 +103,7 @@ class GymAgent(BaseAgent):
             self._nn_path = None
             
         if nn_kwargs is not None:
-            self._nn_kwargs = copy.deepcopy(nn_kwargs)
+            self._nn_kwargs = nn_kwargs
         else:
             self._nn_kwargs = None
         
