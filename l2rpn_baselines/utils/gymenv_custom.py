@@ -175,10 +175,27 @@ class GymEnvWithHeuristics(GymEnv):
                 
                 if self._reward_cumul == "max":
                     res_reward = max(tmp_reward, res_reward)
+                    if "rewards" in tmp_info.keys() and not tmp_done:
+                        if "rewards" in info.keys():
+                            dict_rewards = info["rewards"]
+                            tmp_dict_rewards = tmp_info["rewards"]
+                            info["rewards"] = {rew_name: max(rew, tmp_dict_rewards[rew_name]) for rew_name, rew in dict_rewards.items()}
+                        else:
+                            info["rewards"] = tmp_info["rewards"]
+                            
                 elif self._reward_cumul == "sum":
                     res_reward += tmp_reward
+                    if "rewards" in tmp_info.keys() and not tmp_done:
+                        if "rewards" in info.keys():
+                            dict_rewards = info["rewards"]
+                            tmp_dict_rewards = tmp_info["rewards"]
+                            info["rewards"] = {rew_name: rew + tmp_dict_rewards[rew_name] for rew_name, rew in dict_rewards.items()}
+                        else:
+                            info["rewards"] = tmp_info["rewards"]
                 elif self._reward_cumul == "last":
                     res_reward = tmp_reward
+                    if "rewards" in tmp_info.keys() and not tmp_done:
+                        info["rewards"] = tmp_info["rewards"]
                     
                 if tmp_done:
                     break
