@@ -208,16 +208,20 @@ def train(env,
 if __name__ == "__main__":
     # import grid2op
     import numpy as np
+    import tensorflow as tf
     from grid2op.Parameters import Parameters
     from grid2op import make
     from grid2op.Reward import L2RPNReward
     import re
     try:
-        from lightsim2grid.LightSimBackend import LightSimBackend
+        from lightsim2grid.lightSimBackend import LightSimBackend
         backend = LightSimBackend()
     except:
         from grid2op.Backend import PandaPowerBackend
         backend = PandaPowerBackend()
+        
+    warnings.simplefilter(action="ignore", category=FutureWarning)
+    # tf.compat.v1.logging.set_verbosity(tf.compat.v1.logging.ERROR)
 
     args = cli_train().parse_args()
 
@@ -262,6 +266,7 @@ if __name__ == "__main__":
                chronics_class=MultifolderWithCache
                )
     # env.chronics_handler.set_max_iter(7*288)
+    env.chronics_handler.max_iter = 7*288
     try:
         env.chronics_handler.real_data.set_filter(lambda x: re.match(".*((03)|(72)|(57))$", x) is not None)
         env.chronics_handler.real_data.reset()
@@ -270,7 +275,7 @@ if __name__ == "__main__":
     except AttributeError as exc_:
         # not available in all grid2op version
         pass
-    # env.chronics_handler.real_data.
+    
     env_init = env
     if args.nb_env > 1:
         from l2rpn_baselines.utils import make_multi_env
