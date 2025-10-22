@@ -219,9 +219,9 @@ class DeepQAgent(AgentWithConverter):
 
     def _fill_vectors(self, training_param):
         self._vector_size  = self.nb_ * training_param.update_tensorboard_freq
-        self._actions_per_ksteps = np.zeros((self._vector_size, self.action_space.size()), dtype=np.int)
-        self._illegal_actions_per_ksteps = np.zeros(self._vector_size, dtype=np.int)
-        self._ambiguous_actions_per_ksteps = np.zeros(self._vector_size, dtype=np.int)
+        self._actions_per_ksteps = np.zeros((self._vector_size, self.action_space.size()), dtype=int)
+        self._illegal_actions_per_ksteps = np.zeros(self._vector_size, dtype=int)
+        self._ambiguous_actions_per_ksteps = np.zeros(self._vector_size, dtype=int)
 
     # grid2op.Agent interface
     def convert_obs(self, observation):
@@ -548,7 +548,7 @@ class DeepQAgent(AgentWithConverter):
                     # dirty hack to wrap them into list
                     temp_observation_obj = [temp_observation_obj]
                     temp_reward = np.array([temp_reward], dtype=np.float32)
-                    temp_done = np.array([temp_done], dtype=np.bool)
+                    temp_done = np.array([temp_done], dtype=bool)
                     info = [info]
 
                 new_state = self._convert_obs_train(temp_observation_obj)
@@ -867,7 +867,7 @@ class DeepQAgent(AgentWithConverter):
         return pm_i, pq_v
 
     def _init_global_train_loop(self):
-        alive_frame = np.zeros(self.__nb_env, dtype=np.int)
+        alive_frame = np.zeros(self.__nb_env, dtype=int)
         total_reward = np.zeros(self.__nb_env, dtype=np.float32)
         return alive_frame, total_reward
 
@@ -896,7 +896,7 @@ class DeepQAgent(AgentWithConverter):
     def _init_local_train_loop(self):
         # reward, done = np.zeros(self.nb_process), np.full(self.nb_process, fill_value=False, dtype=np.bool)
         reward = np.zeros(self.__nb_env, dtype=np.float32)
-        done = np.full(self.__nb_env, fill_value=False, dtype=np.bool)
+        done = np.full(self.__nb_env, fill_value=False, dtype=bool)
         return reward, done
 
     def _init_deep_q(self, training_param, env):
