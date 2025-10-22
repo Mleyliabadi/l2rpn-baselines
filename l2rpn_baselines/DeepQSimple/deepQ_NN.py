@@ -69,9 +69,9 @@ class DeepQ_NN(BaseDeepQ):
 
         output = Dense(self._action_size, name="output")(lay)
 
-        self._model = Model(inputs=[input_layer], outputs=[output])
+        self._model = Model(inputs=input_layer, outputs=output)
         self._schedule_lr_model, self._optimizer_model = self.make_optimiser()
         self._model.compile(loss='mse', optimizer=self._optimizer_model)
 
-        self._target_model = Model(inputs=[input_layer], outputs=[output])
+        self._target_model = Model(inputs=input_layer, outputs=output)
         self._target_model.set_weights(self._model.get_weights())
