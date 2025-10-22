@@ -172,6 +172,7 @@ class BaseDeepQ(ABC):
         # Save the graph just the first time
         if tf_writer is not None:
             tf.summary.trace_on()
+            
         target = self._model(s_batch, training=True).numpy()
         fut_action = self._model(s2_batch, training=True).numpy()
         if tf_writer is not None:
@@ -216,7 +217,7 @@ class BaseDeepQ(ABC):
         path_target_model = "{}_target".format(path_model)
         return path_model, path_target_model
 
-    def save_network(self, path, name=None, ext="h5"):
+    def save_network(self, path, name=None, ext="keras"):
         """
         save the neural networks.
 
@@ -236,7 +237,7 @@ class BaseDeepQ(ABC):
         self._model.save('{}.{}'.format(path_model, ext))
         self._target_model.save('{}.{}'.format(path_target_model, ext))
 
-    def load_network(self, path, name=None, ext="h5"):
+    def load_network(self, path, name=None, ext="keras"):
         """
         Load the neural networks.
         Parameters
@@ -273,8 +274,8 @@ class BaseDeepQ(ABC):
         source_params = self._model.trainable_variables
         for src, dest in zip(source_params, target_params):
             # Polyak averaging
-            var_update = src.value() * tau
-            var_persist = dest.value() * tau_inv
+            var_update = src.value * tau
+            var_persist = dest.value * tau_inv
             dest.assign(var_update + var_persist)
 
     def save_tensorboard(self, current_step):
